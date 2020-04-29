@@ -3,14 +3,18 @@
 public class GrapplingGunTether : MonoBehaviour {
 
     private LineRenderer lr;
-    public Vector3 grapplePoint;
     public LayerMask whatIsGrappleable;
     public Transform gunTip, camera, player;
     private float maxDistance = 100f;
     public SpringJoint joint;
     private bool inTether = false;
 
+
+    public Vector3 grapplePoint;
+    public Vector3 grapplePoint2;
+
     public Collider grappleBody;
+    public Collider grappleBody2;
 
     void Awake() {
         lr = GetComponent<LineRenderer>();
@@ -37,8 +41,9 @@ public class GrapplingGunTether : MonoBehaviour {
         Debug.Log("tether start");
         RaycastHit hit;
         if (!inTether && Physics.Raycast(camera.position, camera.forward, out hit, maxDistance, whatIsGrappleable)) {
-            grapplePoint = hit.point;
             grappleBody = hit.collider;
+            //grapplePoint = grappleBody.transform.InverseTransformPoint(hit.point);
+            grapplePoint = hit.point;
             inTether = true;
             Debug.Log("now in tether");
         }
@@ -53,7 +58,9 @@ public class GrapplingGunTether : MonoBehaviour {
         RaycastHit hit;
         if (Physics.Raycast(camera.position, camera.forward, out hit, maxDistance, whatIsGrappleable)) {
             Debug.Log("found tether object");
-            currentGrapplePosition = hit.point;
+            grappleBody2 = hit.collider;
+            //grapplePoint2 = grappleBody2.transform.InverseTransformPoint(hit.point);
+            
             // TODO: this needs to be attached to the object that's hit, instead
             //joint = player.gameObject.AddComponent<SpringJoint>();
             joint = grappleBody.gameObject.AddComponent<SpringJoint>();
@@ -61,6 +68,8 @@ public class GrapplingGunTether : MonoBehaviour {
             joint.autoConfigureConnectedAnchor = true;
             joint.connectedBody = hit.rigidbody;
             //joint.connectedAnchor = grapplePoint;
+            grapplePoint = joint.anchor;
+            grapplePoint2 = joint.connectedAnchor;
 
             float distanceFromPoint = Vector3.Distance(player.position, grapplePoint);
 
@@ -91,10 +100,17 @@ public class GrapplingGunTether : MonoBehaviour {
         //If not grappling, don't draw rope
         if (!joint) return;
 
-        currentGrapplePosition = Vector3.Lerp(currentGrapplePosition, grapplePoint, Time.deltaTime * 8f);
-        
-        lr.SetPosition(0,  grapplePoint);
-        lr.SetPosition(1, currentGrapplePosition);
+        //currentGrapplePosition = Vector3.Lerp(grapplePoint, grapplePoint2, Time.deltaTime * 8f);
+        currentGrapplePosition = Vector3.Lerp(
+            //grappleBody.transform.InverseTransformPoint(joint.anchor), 
+            //grappleBody2.transform.InverseTransformPoint(joint.connectedAnchor), 
+            joint.anchor, joint.connectedAnchor,
+            Time.deltaTime * 8f);
+
+        //lr.SetPosition(0, grappleBody.transform.InverseTransformPoint(joint.anchor));
+        //lr.SetPosition(1, grappleBody2.transform.InverseTransformPoint(joint.connectedAnchor));
+        lr.SetPosition(1, joint.anchor);
+        lr.SetPosition(0, currentGrapplePosition);
     }
 
     public bool IsGrappling() {
