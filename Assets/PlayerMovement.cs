@@ -50,6 +50,12 @@ public class PlayerMovement : MonoBehaviour {
 
     public float xMag, yMag;
 
+         public GameObject[] weapons; // push your prefabs
+ 
+     public int currentWeapon = 0;
+     
+     private int nrWeapons;
+
     void Awake() {
         rb = GetComponent<Rigidbody>();
     }
@@ -58,6 +64,10 @@ public class PlayerMovement : MonoBehaviour {
         playerScale =  transform.localScale;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        nrWeapons = weapons.Length;
+         
+        SwitchWeapon(currentWeapon); // Set default gun
     }
 
     
@@ -67,6 +77,14 @@ public class PlayerMovement : MonoBehaviour {
 
     private void Update() {
         MyInput();
+        for (int i=1; i <= nrWeapons; i++)    { 
+            if (Input.GetKeyDown("" + i)) {
+                currentWeapon = i-1;
+                 
+                SwitchWeapon(currentWeapon);
+             
+            }
+        }        
         Look();
     }
 
@@ -86,6 +104,17 @@ public class PlayerMovement : MonoBehaviour {
         if (Input.GetKeyUp(KeyCode.LeftControl))
             StopCrouch();
     }
+
+    void SwitchWeapon(int index) {
+ 
+         for (int i=0; i < nrWeapons; i++)    {
+             if (i == index) {
+                 weapons[i].gameObject.SetActive(true);
+             } else { 
+                 weapons[i].gameObject.SetActive(false);
+             }
+         }
+     }
 
     private void StartCrouch() {
         transform.localScale = crouchScale;

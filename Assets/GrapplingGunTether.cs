@@ -40,6 +40,7 @@ public class GrapplingGunTether : MonoBehaviour {
     void StartTether() {
         Debug.Log("tether start");
         RaycastHit hit;
+        Destroy(joint);
         if (!inTether && Physics.Raycast(camera.position, camera.forward, out hit, maxDistance, whatIsGrappleable)) {
             grappleBody = hit.collider;
             //grapplePoint = grappleBody.transform.InverseTransformPoint(hit.point);
@@ -71,7 +72,7 @@ public class GrapplingGunTether : MonoBehaviour {
             grapplePoint = joint.anchor;
             grapplePoint2 = joint.connectedAnchor;
 
-            float distanceFromPoint = Vector3.Distance(player.position, grapplePoint);
+            float distanceFromPoint = Vector3.Distance(grapplePoint2, grapplePoint);
 
             //The distance grapple will try to keep from grapple point. 
             joint.maxDistance = distanceFromPoint * 0.8f;
