@@ -48,6 +48,8 @@ public class PlayerMovement : MonoBehaviour {
     private Vector3 normalVector = Vector3.up;
     private Vector3 wallNormalVector;
 
+    public float xMag, yMag;
+
     void Awake() {
         rb = GetComponent<Rigidbody>();
     }
@@ -107,14 +109,15 @@ public class PlayerMovement : MonoBehaviour {
 		//Find actual velocity relative to where player is looking
         //Vector2 mag = FindVelRelativeToLook();
         Vector2 mag = FindVelRelativeToLook();
-        float xMag = mag.x, yMag = mag.y;
+        xMag = mag.x;
+        yMag = mag.y;
 
         //Some multipliers
         float multiplier = 1f, multiplierV = 1f;
         
         if (skimming && ((xMag > 0) || (yMag > 0)) && (xMag < maxSkimSpeed) && (yMag < maxSkimSpeed)) {
         	if (grounded) {
-        		rb.AddForce(Vector3.down * 130);
+        		rb.AddForce(Vector3.down * (130 / Mathf.Max(xMag, yMag)));
         	}
 			rb.AddForce(rb.velocity.normalized * 1.05f, ForceMode.Impulse);
 			CounterMovement(x, y, mag);
