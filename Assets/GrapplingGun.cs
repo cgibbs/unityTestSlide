@@ -7,7 +7,7 @@ public class GrapplingGun : MonoBehaviour {
     public LayerMask whatIsGrappleable;
     public Transform gunTip, camera, player;
     private float maxDistance = 100f;
-    private SpringJoint joint;
+    public SpringJoint joint;
 
     void Awake() {
         lr = GetComponent<LineRenderer>();
@@ -35,8 +35,9 @@ public class GrapplingGun : MonoBehaviour {
         if (Physics.Raycast(camera.position, camera.forward, out hit, maxDistance, whatIsGrappleable)) {
             grapplePoint = hit.point;
             joint = player.gameObject.AddComponent<SpringJoint>();
-            joint.autoConfigureConnectedAnchor = false;
-            joint.connectedAnchor = grapplePoint;
+            joint.autoConfigureConnectedAnchor = true;
+            //joint.connectedAnchor = grapplePoint;
+            joint.connectedBody = hit.rigidbody;
 
             float distanceFromPoint = Vector3.Distance(player.position, grapplePoint);
 
