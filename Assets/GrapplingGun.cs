@@ -43,8 +43,9 @@ public class GrapplingGun : MonoBehaviour {
             _audioSource.Play();
             grapplePoint = hit.point;
             joint = player.gameObject.AddComponent<SpringJoint>();
-            joint.autoConfigureConnectedAnchor = false;
-            joint.connectedAnchor = grapplePoint;
+            joint.autoConfigureConnectedAnchor = true;
+            //joint.connectedAnchor = grapplePoint;
+            joint.connectedBody = hit.rigidbody;
 
             float distanceFromPoint = Vector3.Distance(player.position, grapplePoint);
 
