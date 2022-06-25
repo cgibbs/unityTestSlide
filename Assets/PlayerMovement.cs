@@ -57,6 +57,8 @@ public class PlayerMovement : MonoBehaviour
 
     private int nrWeapons;
 
+    private AudioSource _audioSource;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -71,6 +73,13 @@ public class PlayerMovement : MonoBehaviour
         nrWeapons = weapons.Length;
 
         SwitchWeapon(currentWeapon); // Set default gun
+
+        _audioSource = GetComponent<AudioSource>();
+
+        if (_audioSource == null)
+        {
+            Debug.LogError("audio source NULL");
+        }
     }
 
 
@@ -104,7 +113,10 @@ public class PlayerMovement : MonoBehaviour
         y = Input.GetAxisRaw("Vertical");
         jumping = Input.GetButton("Jump");
         crouching = Input.GetKey(KeyCode.LeftControl);
-        skimming = Input.GetKey(KeyCode.LeftShift);
+        if (Input.GetKey(KeyCode.LeftShift) && skimming == false)
+            StartSkim();
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+            StopSkim();
 
         //Crouching
         if (Input.GetKeyDown(KeyCode.LeftControl))
@@ -127,6 +139,18 @@ public class PlayerMovement : MonoBehaviour
                 weapons[i].gameObject.SetActive(false);
             }
         }
+    }
+
+    private void StartSkim()
+    {
+        skimming = true;
+        _audioSource.Play();
+    }
+
+    private void StopSkim()
+    {
+        skimming = false;
+        _audioSource.Stop();
     }
 
     private void StartCrouch()
