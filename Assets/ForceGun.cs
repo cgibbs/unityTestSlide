@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class ForceGun : MonoBehaviour
 {
-
     public Transform gunTip, camera, player;
     public LayerMask whatIsGrappleable;
     private float maxDistance = 100f;
@@ -51,8 +50,7 @@ public class ForceGun : MonoBehaviour
     /// <summary>
     /// Call whenever we want to stop a grapple
     /// </summary>
-    void StopSlappin()
-    {
+    void StopSlappin() {
 
     }
 }
