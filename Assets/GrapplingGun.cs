@@ -7,10 +7,17 @@ public class GrapplingGun : MonoBehaviour {
     public LayerMask whatIsGrappleable;
     public Transform gunTip, camera, player;
     private float maxDistance = 100f;
-    public SpringJoint joint;
+    private SpringJoint joint;
+    private AudioSource _audioSource;
 
     void Awake() {
         lr = GetComponent<LineRenderer>();
+        _audioSource = GetComponent<AudioSource>();
+
+        if(_audioSource == null)
+        {
+            Debug.LogError("audio source NULL");
+        }
     }
 
     void Update() {
@@ -33,6 +40,7 @@ public class GrapplingGun : MonoBehaviour {
     void StartGrapple() {
         RaycastHit hit;
         if (Physics.Raycast(camera.position, camera.forward, out hit, maxDistance, whatIsGrappleable)) {
+            _audioSource.Play();
             grapplePoint = hit.point;
             joint = player.gameObject.AddComponent<SpringJoint>();
             joint.autoConfigureConnectedAnchor = true;
