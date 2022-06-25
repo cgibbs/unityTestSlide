@@ -176,17 +176,13 @@ public class PlayerMovement : MonoBehaviour
 
             //return;
 
-            if (grounded)
+            if (grounded && (xMag < maxSkimSpeed) && (yMag < maxSkimSpeed))
             {
                 // tune the slowdown force here kinda
                 rb.AddForce(Vector3.down * (40 / Mathf.Max(xMag, yMag)));
                 rb.AddForce(rb.velocity.normalized * 1.05f, ForceMode.Impulse);
                 CounterMovement(x, y, mag);
                 multiplier = 0.1f;
-                if ((xMag < maxSkimSpeed) && (yMag < maxSkimSpeed))
-                {
-                    multiplier = 0.0f;
-                }
                 rb.AddForce(orientation.transform.right * x * moveSpeed * Time.deltaTime * multiplier);
             }
 
